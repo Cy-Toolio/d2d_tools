@@ -68,6 +68,10 @@ python csv_tui.py myfile.csv
 | Esc | Clear bar / return to table |
 | `q` | Quit |
 
+### Column stats
+
+Click any column in the left panel to see its type, count, null %, and unique count. Numeric columns also show min, max, mean, median, and standard deviation.
+
 ### Filtering
 
 Type in the filter bar (`/`) to narrow rows in real time.
@@ -92,9 +96,17 @@ round(score / total * 100, 1)  math functions, auto-named
 col_a + col_b                  column names used directly
 ```
 
-Available functions: `abs` `round` `min` `max` `int` `float` `sqrt` `exp` `log` `floor` `ceil` `sin` `cos` `tan`
+Arithmetic operators: `+` `-` `*` `/` `//` `%` `**`
+
+Available functions: `abs` `round` `min` `max` `int` `float` `str` `len` `pow` `sqrt` `exp` `log` `log10` `floor` `ceil` `sin` `cos` `tan`
+
+Constants: `pi` `e`
 
 Press `?` inside the app for the full reference.
+
+### Distinct values
+
+Press `v` to open the distinct values view. Select one or more columns to group by; press `s` to cycle sort order (count desc, value asc, count asc).
 
 ### Save / Export
 
