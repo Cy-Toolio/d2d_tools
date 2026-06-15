@@ -1,78 +1,105 @@
-# d2d_tools
+# CSV Analyzer
 
-Internal utilities for data analysis and manipulation.
-
----
-
-## csv_tui.py
-
-A terminal-based CSV analyzer built with [Textual](https://github.com/Textualize/textual).
+A terminal UI for browsing, filtering, and analyzing CSV files.
 
 ![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue)
 
-### Features
+## Prerequisites
 
-- Browse any CSV in a scrollable, zebra-striped table
-- **Filter** rows with an expressive query syntax
-- **Compute** new columns from arithmetic expressions
-- **Distinct value** counts and frequency breakdowns across one or more columns
-- **Column stats** — count, nulls, unique, min/max/mean/median/stdev
-- **Save/Export** — write filtered or full data (with or without computed columns) to a new CSV
-- File picker with Windows drive navigation
-- Auto-installs `textual` on first run if missing
+- Python 3.8 or later — [python.org](https://python.org)
+- The [`textual`](https://github.com/Textualize/textual) library — installed automatically on first run
 
-### Install
+## Installation
+
+### Windows
+
+Double-click **`setup.bat`**.
+
+This registers CSV Analyzer as a handler for `.csv` files. Then do a one-time step to set it as the default:
+
+1. Right-click any `.csv` file → **Open with** → **Choose another app**
+2. Select **CSV Analyzer** → tick **Always use this app** → OK
+
+To uninstall: `powershell -ExecutionPolicy Bypass -File install_csv_default.ps1 -Uninstall`
+
+### macOS
 
 ```bash
-pip install textual
+bash install_csv_mac.sh
 ```
 
-### Usage
+This builds `CSV Analyzer.app` in the same folder and registers it with Launch Services.
+
+**First run only** — macOS will block the unsigned app. Right-click `CSV Analyzer.app` → **Open** → **Open** to allow it.
+
+Then set as default:
+
+1. Right-click any `.csv` file → **Get Info** (⌘I)
+2. **Open with** → select **CSV Analyzer** → click **Change All...**
+
+To uninstall: `bash install_csv_mac.sh --uninstall`
+
+### Direct use (any OS)
 
 ```bash
-python csv_tui.py [file.csv]
+# macOS / Linux
+bash csv_tui_launcher.sh myfile.csv
+
+# Windows
+csv_tui_launcher.bat myfile.csv
+
+# Or directly with Python
+python csv_tui.py myfile.csv
 ```
 
-If no file is passed, press `o` inside the app to open a file picker.
-
-### Key bindings
+## Usage
 
 | Key | Action |
 |-----|--------|
-| `o` | Open file |
+| `o` | Open a CSV file |
 | `r` | Reload current file |
 | `/` | Focus filter bar |
 | `=` | Focus compute bar |
 | `?` | Compute syntax reference |
-| `v` | Distinct value viewer |
-| `s` | Save / Export |
-| `d` | Delete selected computed column |
-| `PgUp / PgDn` | Scroll table |
+| `v` | Distinct value counts |
+| `s` | Save / export |
+| `d` | Delete a computed column |
+| PgUp / PgDn | Scroll table |
+| Esc | Clear bar / return to table |
 | `q` | Quit |
 
-### Filter syntax
+### Filtering
 
-Type expressions in the `/` bar. Results update as you type.
+Type in the filter bar (`/`) to narrow rows in real time.
 
 ```
-age > 30                        numeric comparison
-city = Berlin                   exact match (case-insensitive)
-name ~ ali                      substring search
-score >= 80 & city = Rome       AND conditions
-berlin                          plain text searches all columns
+age > 30                       numeric comparison
+city = Berlin                  exact match (case-insensitive)
+name ~ ali                     substring search
+score >= 80 & city = Rome      AND — chain with &
+berlin                         plain text searches every column
 ```
 
 Operators: `=` `!=` `>` `<` `>=` `<=` `~`
 
-### Compute syntax
+### Computed columns
 
-Type in the `=` bar and press Enter to add a new column.
+Type in the compute bar (`=`) and press Enter to add a derived column.
 
 ```
-price * 1.2 [inflated]          multiply with a custom column name
-col1 + col2 * 0.5               arithmetic across columns
-round(price * 1.2, 2) [inc]     math functions
-sqrt(area)                      [name] is optional — defaults to computed_1, computed_2 …
+price * 1.2 [with_tax]         arithmetic, named column
+round(score / total * 100, 1)  math functions, auto-named
+col_a + col_b                  column names used directly
 ```
 
-Available functions: `abs`, `round`, `min`, `max`, `int`, `float`, `str`, `len`, `pow`, `sqrt`, `exp`, `log`, `log10`, `floor`, `ceil`, `sin`, `cos`, `tan`, `pi`, `e`
+Available functions: `abs` `round` `min` `max` `int` `float` `sqrt` `exp` `log` `floor` `ceil` `sin` `cos` `tan`
+
+Press `?` inside the app for the full reference.
+
+### Save / Export
+
+Press `s` to open the export dialog. Options:
+
+- **All rows** or **filtered rows only**
+- **Include / exclude computed columns**
+- Browse to any destination path

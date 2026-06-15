@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS generated app bundle (built by install_csv_mac.sh, not committed)
+CSV Analyzer.app/
+
+# macOS system files
+.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
