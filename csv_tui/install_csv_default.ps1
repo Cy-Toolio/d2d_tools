@@ -126,6 +126,8 @@ if (-not (Test-Path $ExePath)) {
     }
 
     # C# source for the launcher stub
+    # Calls python directly (UseShellExecute=false) so it inherits this process's
+    # console — avoids the second terminal tab that cmd.exe indirection would create.
     $csharp = @'
 using System;
 using System.Diagnostics;
@@ -133,11 +135,11 @@ using System.IO;
 class CsvAnalyzer {
     static void Main(string[] args) {
         string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        string bat = Path.Combine(dir, "csv_tui_launcher.bat");
-        string cmdArgs = args.Length > 0
-            ? "/c \"\"" + bat + "\" \"" + args[0] + "\"\""
-            : "/c \"\"" + bat + "\"\"";
-        var p = Process.Start("cmd.exe", cmdArgs);
+        string script = Path.Combine(dir, "csv_tui.py");
+        string pythonArgs = "\"" + script + "\"";
+        if (args.Length > 0) pythonArgs += " \"" + args[0] + "\"";
+        var psi = new ProcessStartInfo("python", pythonArgs) { UseShellExecute = false };
+        var p = Process.Start(psi);
         if (p != null) p.WaitForExit();
     }
 }
